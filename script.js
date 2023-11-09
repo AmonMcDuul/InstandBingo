@@ -5,6 +5,7 @@ const autoPlayButton = document.getElementById("auto-play-button");
 const restartButton = document.getElementById("restart-game");
 const playAgainButton = document.getElementById("play-again");
 const drawnNumbersContainer = document.getElementById("drawn-numbers");
+const allDrawnNumbersContainer = document.getElementById("all-drawn-numbers");
 const numbers = new Set();
 const cardSize = 5;
 
@@ -139,6 +140,7 @@ startGameButton.addEventListener("click", () => {
   playAgainButton.disabled = true;
   numbers.clear();
   drawnNumbersContainer.innerHTML = "";
+  allDrawnNumbersContainer.innerHTML = "";
   isGameWon = false;
   stopAutoPlay();
   resetCard();
@@ -166,6 +168,7 @@ restartButton.addEventListener("click", () => {
   playAgainButton.disabled = true;
   numbers.clear();
   drawnNumbersContainer.innerHTML = "";
+  allDrawnNumbersContainer.innerHTML = "";
   isGameWon = false;
   stopAutoPlay();
   resetCard();
@@ -179,6 +182,7 @@ playAgainButton.addEventListener("click", () => {
   playAgainButton.disabled = true;
   numbers.clear();
   drawnNumbersContainer.innerHTML = "";
+  allDrawnNumbersContainer.innerHTML = "";
   isGameWon = false;
   stopAutoPlay();
   resetCard();
@@ -207,8 +211,11 @@ function drawNumber() {
 
 function updateDrawnNumber(number) {
   const drawnNumberElement = document.createElement("div");
+  const allDrawnNumbersElement = document.createElement("div");
   drawnNumberElement.innerText = number;
   drawnNumbersContainer.innerHTML = number;
+  allDrawnNumbersElement.innerText = number + " - ";
+  allDrawnNumbersContainer.appendChild(allDrawnNumbersElement);
 }
 
 function crossOffNumber(number) {

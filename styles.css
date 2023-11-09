@@ -1,3 +1,32 @@
+body {
+  background-color: burlywood
+  
+}
+.main-container {
+  margin: 10px;
+  background-color: rgb(223, 195, 160);
+  border: 1px solid black; 
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.chosen-numbers{
+  background-color: rgb(238, 218, 192);
+  width: 200px;
+  margin: 10px;
+  padding-left: 16px;
+  border: 1px solid black; 
+}
+
+.all-drawn-numbers {
+  display: flex;
+  flex-wrap: wrap; 
+  justify-content: center; 
+  width: 180px;
+  border: 1px solid black; 
+}
+
 .bingo-game {
     text-align: center;
     margin: 20px;
