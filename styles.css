@@ -1,0 +1,40 @@
+.bingo-game {
+    text-align: center;
+    margin: 20px;
+  }
+  
+  .bingo-card {
+    width: 300px;
+    height: 300px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    grid-gap: 5px;
+  }
+  
+  .bingo-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #000;
+    font-size: 20px;
+    background: lightblue;
+    cursor: pointer;
+  }
+  
+  .crossed-off {
+    background: red;
+    color: white;
+  }
+  
+  button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+  }
+  
+  .drawn-numbers {
+    margin-top: 20px;
+  }
+  
+  
