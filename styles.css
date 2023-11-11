@@ -1,69 +1,81 @@
 body {
-  background-color: burlywood
-  
+  background-color: burlywood;
+}
+
+.input-container{
+  margin: 10px;
 }
 .main-container {
   margin: 10px;
   background-color: rgb(223, 195, 160);
-  border: 1px solid black; 
+  border: 1px solid black;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
 }
 
-.chosen-numbers{
+.chosen-numbers {
   background-color: rgb(238, 218, 192);
   width: 200px;
   margin: 10px;
   padding-left: 16px;
-  border: 1px solid black; 
+  border: 1px solid black;
 }
 
 .all-drawn-numbers {
   display: flex;
-  flex-wrap: wrap; 
-  justify-content: center; 
+  flex-wrap: wrap;
+  justify-content: center;
   width: 180px;
-  border: 1px solid black; 
+  border: 1px solid black;
+}
+
+.bingo-cards-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.bingo-card-container {
+  margin: 10px;
+  padding: 10px;
+  border: 2px solid black;
+  display: inline-block;
 }
 
 .bingo-game {
-    text-align: center;
-    margin: 20px;
-  }
-  
-  .bingo-card {
-    width: 300px;
-    height: 300px;
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(5, 1fr);
-    grid-gap: 5px;
-  }
-  
-  .bingo-number {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #000;
-    font-size: 20px;
-    background: lightblue;
-    cursor: pointer;
-  }
-  
-  .crossed-off {
-    background: red;
-    color: white;
-  }
-  
-  button {
-    margin: 10px;
-    padding: 10px 20px;
-    font-size: 16px;
-  }
-  
-  .drawn-numbers {
-    margin-top: 20px;
-  }
-  
-  
+  text-align: center;
+  margin: 20px;
+}
+
+.bingo-card {
+  width: 300px;
+  height: 300px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  grid-gap: 5px;
+}
+
+.bingo-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #000;
+  font-size: 20px;
+  background: lightblue;
+}
+
+.crossed-off {
+  background: red;
+  color: white;
+}
+
+button {
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+}
+
+.drawn-numbers {
+  margin-top: 20px;
+}

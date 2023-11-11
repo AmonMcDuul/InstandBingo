@@ -1,15 +1,17 @@
-const bingoCard = document.getElementById("bingo-card");
+const bingoCardsContainer = document.getElementById("bingo-cards-container");
 const startGameButton = document.getElementById("start-game");
 const nextRoundButton = document.getElementById("next-round");
 const autoPlayButton = document.getElementById("auto-play-button");
 const restartButton = document.getElementById("restart-game");
-const playAgainButton = document.getElementById("play-again");
 const drawnNumbersContainer = document.getElementById("drawn-numbers");
 const allDrawnNumbersContainer = document.getElementById("all-drawn-numbers");
-const numbers = new Set();
+const numberOfCardsInput = document.getElementById("numberOfCards");
+const numberOfCardsButton = document.getElementById("numberOfCards-button");
 const cardSize = 5;
+const numbers = new Set();
 
 let bingoNumbers = [];
+let numberOfCards = 1;
 let isGameWon = false;
 let isAutoPlaying = false;
 
@@ -27,56 +29,81 @@ function generateBingoCard() {
   return card;
 }
 
-function createAndDisplayBingoCard() {
-  bingoCard.innerHTML = "";
-  bingoNumbers = generateBingoCard();
+function createAndDisplayBingoCards() {
+  bingoNumbers = [];
+  bingoCardsContainer.innerHTML = "";
 
-  for (let i = 0; i < cardSize; i++) {
-    for (let j = 0; j < cardSize; j++) {
-      const numberCell = document.createElement("div");
-      numberCell.classList.add("bingo-number");
-      numberCell.innerText = bingoNumbers[i * cardSize + j];
-      bingoCard.appendChild(numberCell);
+  for (let cardIndex = 0; cardIndex < numberOfCards; cardIndex++) {
+    const bingoCardContainer = document.createElement("div");
+    bingoCardContainer.classList.add("bingo-card-container");
+    bingoCardContainer.style.borderColor = "black";
+    bingoCardsContainer.appendChild(bingoCardContainer);
+
+    const card = generateBingoCard();
+    bingoNumbers.push(card);
+
+    const bingoCard = document.createElement("div");
+    bingoCard.classList.add("bingo-card");
+
+    for (let i = 0; i < cardSize; i++) {
+      for (let j = 0; j < cardSize; j++) {
+        const numberCell = document.createElement("div");
+        numberCell.classList.add("bingo-number");
+        numberCell.innerText = card[i * cardSize + j];
+        bingoCard.appendChild(numberCell);
+      }
     }
+
+    bingoCardContainer.appendChild(bingoCard);
   }
 }
 
 function checkForWin() {
   if (isGameWon) return;
 
-  const lines = [...Array(cardSize)].map((_, index) =>
-    bingoNumbers.slice(index * cardSize, (index + 1) * cardSize)
-  );
+  for (let cardIndex = 0; cardIndex < numberOfCards; cardIndex++) {
+    const cardNumbers = bingoNumbers[cardIndex];
+    const lines = [...Array(cardSize)].map((_, index) =>
+      cardNumbers.slice(index * cardSize, (index + 1) * cardSize)
+    );
 
-  // Check rows
-  for (let i = 0; i < cardSize; i++) {
-    if (lines[i].every((num) => numbers.has(num))) {
-      isGameWon = true;
-      highlightWinningLine(lines[i].map((_, j) => i * cardSize + j));
-      break;
-    }
-  }
-
-  // Check columns
-  for (let j = 0; j < cardSize; j++) {
-    const column = Array.from({ length: cardSize }, (_, i) => lines[i][j]);
-    if (column.every((num) => numbers.has(num))) {
+    if (isWinningCard(lines)) {
       isGameWon = true;
       highlightWinningLine(
-        Array.from({ length: cardSize }, (_, i) => i * cardSize + j)
+        lines.map((_, j) => cardIndex * cardSize + j),
+        cardIndex
       );
       break;
     }
   }
 
-  // Check diagonals
+  if (isGameWon) {
+    isAutoPlaying = false;
+    nextRoundButton.disabled = true;
+    startGameButton.disabled = false;
+  }
+}
+
+function isWinningCard(lines) {
+  for (let i = 0; i < cardSize; i++) {
+    if (lines[i].every((num) => numbers.has(num))) {
+      return true;
+    }
+  }
+
+  for (let j = 0; j < cardSize; j++) {
+    const column = Array.from({ length: cardSize }, (_, i) => lines[i][j]);
+    if (column.every((num) => numbers.has(num))) {
+      return true;
+    }
+  }
+
   const diagonal1 = Array.from(
     { length: cardSize },
     (_, i) => i * cardSize + i
   );
   if (diagonal1.every((num) => numbers.has(bingoNumbers[num]))) {
-    isGameWon = true;
-    highlightWinningLine(diagonal1);
+    return true;
   }
 
   const diagonal2 = Array.from(
@@ -84,22 +111,33 @@ function checkForWin() {
     (_, i) => i * cardSize + (cardSize - 1 - i)
   );
   if (diagonal2.every((num) => numbers.has(bingoNumbers[num]))) {
-    isGameWon = true;
-    highlightWinningLine(diagonal2);
+    return true;
   }
 
-  if (isGameWon) {
-    isAutoPlaying = false;
-    nextRoundButton.disabled = true;
-    playAgainButton.disabled = false;
-  }
+  return false;
 }
 
-function highlightWinningLine(numbersToHighlight) {
-  numbersToHighlight.forEach((index) => {
-    const numberCell = bingoCard.children[index];
-    numberCell.style.backgroundColor = "lightgreen";
-  });
+function highlightWinningLine(numbersToHighlight, cardIndex) {
+  const bingoCardContainers = document.getElementsByClassName(
+    "bingo-card-container"
+  );
+  if (cardIndex >= 0 && cardIndex < bingoCardContainers.length) {
+    const bingoCardContainer = bingoCardContainers[cardIndex];
+    const bingoCard = bingoCardContainer.querySelector(".bingo-card");
+    if (bingoCard) {
+      numbersToHighlight.forEach((index) => {
+        if (index >= 0 && index < bingoCard.children.length) {
+          const numberCell = bingoCard.children[index];
+
+          if (numberCell) {
+            numberCell.style.backgroundColor = "lightgreen";
+          }
+        }
+      });
+      bingoCardContainer.style.borderColor = "lightgreen";
+      bingoCardContainer.style.backgroundColor = "green";
+    }
+  }
 }
 
 function autoPlayNumbers(number = 1) {
@@ -132,62 +170,6 @@ function stopAutoPlay() {
   isAutoPlaying = false;
 }
 
-startGameButton.addEventListener("click", () => {
-  createAndDisplayBingoCard();
-  startGameButton.disabled = true;
-  nextRoundButton.disabled = false;
-  restartButton.disabled = false;
-  playAgainButton.disabled = true;
-  numbers.clear();
-  drawnNumbersContainer.innerHTML = "";
-  allDrawnNumbersContainer.innerHTML = "";
-  isGameWon = false;
-  stopAutoPlay();
-  resetCard();
-});
-
-nextRoundButton.addEventListener("click", () => {
-  const drawnNumber = drawNumber();
-  if (drawnNumber) {
-    updateDrawnNumber(drawnNumber);
-    crossOffNumber(drawnNumber);
-    checkForWin();
-    stopAutoPlay();
-  }
-});
-
-autoPlayButton.addEventListener("click", () => {
-  autoPlayNumbers();
-});
-
-restartButton.addEventListener("click", () => {
-  createAndDisplayBingoCard();
-  startGameButton.disabled = true;
-  nextRoundButton.disabled = false;
-  restartButton.disabled = false;
-  playAgainButton.disabled = true;
-  numbers.clear();
-  drawnNumbersContainer.innerHTML = "";
-  allDrawnNumbersContainer.innerHTML = "";
-  isGameWon = false;
-  stopAutoPlay();
-  resetCard();
-});
-
-playAgainButton.addEventListener("click", () => {
-  createAndDisplayBingoCard();
-  startGameButton.disabled = true;
-  nextRoundButton.disabled = false;
-  restartButton.disabled = true;
-  playAgainButton.disabled = true;
-  numbers.clear();
-  drawnNumbersContainer.innerHTML = "";
-  allDrawnNumbersContainer.innerHTML = "";
-  isGameWon = false;
-  stopAutoPlay();
-  resetCard();
-});
-
 function resetCard() {
   const bingoNumbers = document.querySelectorAll(".bingo-number");
   bingoNumbers.forEach((numberCell) => {
@@ -200,13 +182,20 @@ function drawNumber() {
   const unusedNumbers = [...Array(100)]
     .map((_, i) => i + 1)
     .filter((num) => !numbers.has(num));
+
   if (unusedNumbers.length === 0) {
     return null;
   }
-  const index = Math.floor(Math.random() * unusedNumbers.length);
-  const drawnNumber = unusedNumbers[index];
-  numbers.add(drawnNumber);
-  return drawnNumber;
+
+  try {
+    const index = Math.floor(Math.random() * unusedNumbers.length);
+    const drawnNumber = unusedNumbers[index];
+    numbers.add(drawnNumber);
+    return drawnNumber;
+  } catch (error) {
+    console.error(`Error drawing number: ${error.message}`);
+    return null;
+  }
 }
 
 function updateDrawnNumber(number) {
@@ -226,3 +215,53 @@ function crossOffNumber(number) {
     }
   });
 }
+
+function startNewGame() {
+  createAndDisplayBingoCards();
+  startGameButton.disabled = true;
+  nextRoundButton.disabled = false;
+  restartButton.disabled = false;
+  numbers.clear();
+  drawnNumbersContainer.innerHTML = "";
+  allDrawnNumbersContainer.innerHTML = "";
+  isGameWon = false;
+  stopAutoPlay();
+  resetCard();
+
+  // Reset border color of all bingo card containers
+  const bingoCardContainers = document.getElementsByClassName(
+    "bingo-card-container"
+  );
+
+  for (let i = 0; i < bingoCardContainers.length; i++) {
+    bingoCardContainers[i].style.borderColor = "black";
+  }
+}
+
+startGameButton.addEventListener("click", () => {
+  startNewGame();
+});
+
+nextRoundButton.addEventListener("click", () => {
+  for (let cardIndex = 0; cardIndex < numberOfCards; cardIndex++) {
+    const drawnNumber = drawNumber();
+    if (drawnNumber) {
+      updateDrawnNumber(drawnNumber);
+      crossOffNumber(drawnNumber, cardIndex);
+    }
+  }
+  checkForWin();
+  stopAutoPlay();
+});
+
+autoPlayButton.addEventListener("click", () => {
+  autoPlayNumbers();
+});
+
+restartButton.addEventListener("click", () => {
+  startNewGame();
+});
+
+numberOfCardsButton.addEventListener("click", () => {
+  numberOfCards = parseInt(numberOfCardsInput.value, 10) || 1;
+});
