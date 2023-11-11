@@ -221,6 +221,7 @@ function startNewGame() {
   startGameButton.disabled = true;
   nextRoundButton.disabled = false;
   restartButton.disabled = false;
+  autoPlayButton.disabled = false;
   numbers.clear();
   drawnNumbersContainer.innerHTML = "";
   allDrawnNumbersContainer.innerHTML = "";
@@ -250,11 +251,13 @@ nextRoundButton.addEventListener("click", () => {
       crossOffNumber(drawnNumber, cardIndex);
     }
   }
+  autoPlayButton.disabled = false;
   checkForWin();
   stopAutoPlay();
 });
 
 autoPlayButton.addEventListener("click", () => {
+  autoPlayButton.disabled = true;
   autoPlayNumbers();
 });
 
