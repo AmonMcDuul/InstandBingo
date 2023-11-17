@@ -3,6 +3,7 @@ const startGameButton = document.getElementById("start-game");
 const nextRoundButton = document.getElementById("next-round");
 const autoPlayButton = document.getElementById("auto-play-button");
 const restartButton = document.getElementById("restart-game");
+const winningCardContainer = document.getElementById("winning-card");
 const drawnNumbersContainer = document.getElementById("drawn-numbers");
 const allDrawnNumbersContainer = document.getElementById("all-drawn-numbers");
 const numberOfCardsInput = document.getElementById("numberOfCards");
@@ -39,6 +40,11 @@ function createAndDisplayBingoCards() {
     bingoCardContainer.style.borderColor = "black";
     bingoCardsContainer.appendChild(bingoCardContainer);
 
+    const cardTitle = document.createElement("div");
+    cardTitle.classList.add("card-title");
+    cardTitle.innerText = `Card ${cardIndex + 1}`;
+    bingoCardContainer.appendChild(cardTitle);
+
     const card = generateBingoCard();
     bingoNumbers.push(card);
 
@@ -67,12 +73,11 @@ function checkForWin() {
       cardNumbers.slice(index * cardSize, (index + 1) * cardSize)
     );
 
-    if (isWinningCard(lines)) {
+    const winningLineIndexes = findWinningLineIndexes(lines);
+
+    if (winningLineIndexes) {
       isGameWon = true;
-      highlightWinningLine(
-        lines.map((_, j) => cardIndex * cardSize + j),
-        cardIndex
-      );
+      highlightWinningLine(winningLineIndexes, cardIndex);
       break;
     }
   }
@@ -82,6 +87,39 @@ function checkForWin() {
     nextRoundButton.disabled = true;
     startGameButton.disabled = false;
   }
+}
+
+function findWinningLineIndexes(lines) {
+  for (let i = 0; i < cardSize; i++) {
+    if (lines[i].every((num) => numbers.has(num))) {
+      return [...Array(cardSize)].map((_, j) => i * cardSize + j);
+    }
+  }
+
+  for (let j = 0; j < cardSize; j++) {
+    const column = Array.from({ length: cardSize }, (_, i) => lines[i][j]);
+    if (column.every((num) => numbers.has(num))) {
+      return [...Array(cardSize)].map((_, i) => i * cardSize + j);
+    }
+  }
+
+  const diagonal1 = Array.from(
+    { length: cardSize },
+    (_, i) => i * cardSize + i
+  );
+  if (diagonal1.every((num) => numbers.has(bingoNumbers[num]))) {
+    return diagonal1;
+  }
+
+  const diagonal2 = Array.from(
+    { length: cardSize },
+    (_, i) => i * cardSize + (cardSize - 1 - i)
+  );
+  if (diagonal2.every((num) => numbers.has(bingoNumbers[num]))) {
+    return diagonal2;
+  }
+
+  return null;
 }
 
 function isWinningCard(lines) {
@@ -121,6 +159,7 @@ function highlightWinningLine(numbersToHighlight, cardIndex) {
   const bingoCardContainers = document.getElementsByClassName(
     "bingo-card-container"
   );
+  winningCardContainer.innerHTML = cardIndex + 1;
   if (cardIndex >= 0 && cardIndex < bingoCardContainers.length) {
     const bingoCardContainer = bingoCardContainers[cardIndex];
     const bingoCard = bingoCardContainer.querySelector(".bingo-card");
@@ -225,11 +264,11 @@ function startNewGame() {
   numbers.clear();
   drawnNumbersContainer.innerHTML = "";
   allDrawnNumbersContainer.innerHTML = "";
+  winningCardContainer.innerHTML = "";
   isGameWon = false;
   stopAutoPlay();
   resetCard();
 
-  // Reset border color of all bingo card containers
   const bingoCardContainers = document.getElementsByClassName(
     "bingo-card-container"
   );

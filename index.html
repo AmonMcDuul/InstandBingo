@@ -12,7 +12,6 @@
         <button id="auto-play-button" disabled>Auto Play</button>
         <button id="restart-game" disabled>Restart Game</button>
         <div class="input-container">
-            <label for="numberOfCards">Number of Bingo Cards:</label>
             <input type="number" id="numberOfCards" min="1" value="1">
             <button id="numberOfCards-button">Set cards</button>
         </div>
@@ -20,8 +19,13 @@
     <div class="main-container">
         <div id="bingo-cards-container" class="bingo-cards-container"></div>
         <div class="chosen-numbers">
-            <h2>Chosen number:</h2>
-            <h2 id="drawn-numbers" class="drawn-numbers"></h2>
+            <h2>Winning card:</h2>
+            <h1 id="winning-card"></h1>
+            <hr>
+            <h2>Last chosen number:</h2>
+            <h1 id="drawn-numbers" class="drawn-numbers"></h1>
+            <hr>
+            <h3>All drawn numbers:</h3>
             <div id="all-drawn-numbers" class="all-drawn-numbers"></div>
         </div>
     </div>

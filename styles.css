@@ -11,23 +11,24 @@ body {
   border: 1px solid black;
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
-  
+  justify-content: space-evenly;
 }
 
 .chosen-numbers {
+  text-align: center;
   background-color: rgb(238, 218, 192);
-  width: 200px;
+  width: 220px;
   margin: 10px;
-  padding-left: 16px;
+  padding: 16px;
   border: 1px solid black;
 }
 
 .all-drawn-numbers {
+  text-align: center;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  width: 180px;
+  width: 220px;
   border: 1px solid black;
 }
 
@@ -41,6 +42,8 @@ body {
   padding: 10px;
   border: 2px solid black;
   display: inline-block;
+  max-height: 322px;
+  background-color: rgb(194, 148, 148);
 }
 
 .bingo-game {
@@ -55,6 +58,11 @@ body {
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: repeat(5, 1fr);
   grid-gap: 5px;
+}
+
+.card-title {
+  font-weight: bold;
+  margin-bottom: 5px;
 }
 
 .bingo-number {
